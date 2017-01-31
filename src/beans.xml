@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+           
+          <bean id="personService" class="cn.itcast.service.impl.PersonServiceBean"/>
+          
+          <!-- 三种实例化bean的方式 -->
+          <!-- 1.使用类构造器实例化 -->
+          <bean id="personService1" class="cn.itcast.service.impl.PersonServiceBean"></bean>
+          <!-- 2.使用静态工厂方法实例化(调用静态方法) -->
+          <bean id="personService2" class="cn.itcast.service.impl.PersonServiceBeanFactory" 
+          		factory-method="createPersonServiceBean"/>
+          <!-- 3.使用实例工厂方法实例化(调用方法) -->
+          <bean id="personServiceFactory" class="cn.itcast.service.impl.PersonServiceBeanFactory"/>
+          <bean id="personService3" factory-bean="personServiceFactory" factory-method="createPersonServiceBean2"/>
+          
+          <!-- Bean的作用域：单例 启动时初始化(启动时、需要时)；初始化方法 销毁方法 -->
+          <!-- 默认情况：单例 启动时初始化(启动时、需要时) -->
+          <bean id="personService4" class="cn.itcast.service.impl.PersonServiceBean2"></bean>
+          <bean id="personService5" class="cn.itcast.service.impl.PersonServiceBean2" scope="prototype"></bean>
+          <bean id="personService6" class="cn.itcast.service.impl.PersonServiceBean2"  lazy-init="true"
+          		init-method="init"  destroy-method="destory"></bean>
+          		
+          <!-- 注入依赖对象 -->
+          <!-- set注入 -->
+		  <bean id="personDao" class="cn.itcast.dao.impl.PersonDaoBean"></bean>
+          <bean id="personService7" class="cn.itcast.service.impl.PersonServiceBean3">
+          	<property name="personDao" ref="personDao"/>
+          	<property name="name" value="itcast"/>
+          	<property name="id" value="88"/>
+          </bean>    
+          <!-- constructor-arg注入 -->
+          <!-- 特别注意：如果有带参数的构造函数，也要定义一个不带任何参数的构造函数 -->
+          <bean id="personService71" class="cn.itcast.service.impl.PersonServiceBean3">
+          	<constructor-arg index="0" type="cn.itcast.dao.PersonDao" ref="personDao"/>
+          	<constructor-arg index="1" value="传智播客"/>
+          	<property name="id" value="88"/>
+          </bean>   
+          <bean id="personService8" class="cn.itcast.service.impl.PersonServiceBean3">
+          	<!--  使用内部bean进行注入-->
+          	<property name="personDao">
+          		<bean class="cn.itcast.dao.impl.PersonDaoBean"/>
+          	</property>
+          	<property name="name" value="itcast2"/>
+          	<property name="id" value="8899"/>
+          </bean>     
+          
+          <bean id="personService9" class="cn.itcast.service.impl.PersonServiceBean4">
+          	<property name="sets">
+          		<set>
+          			<value>第一个set元素</value>
+          			<value>第二个set元素</value>
+          			<value>第三个set元素</value>
+          		</set>
+          	</property>
+          	<property name="lists">
+          		<list>
+          			<value>第一个list元素</value>
+          			<value>第二个list元素</value>
+          			<value>第三个list元素</value>
+          		</list>
+          	</property>
+          	<property name="properties">
+          		<props>
+          			<prop key="key1">value1</prop>
+          			<prop key="key2">value2</prop>
+          			<prop key="key3">value3</prop>
+          		</props>
+          	</property>
+          	<property name="maps">
+          		<map>
+          			<entry key="key-1" value="value-1"/>
+          			<entry key="key-2" value="value-2"/>
+          			<entry key="key-3" value="value-3"/>
+          		</map>
+          	</property>
+          </bean>           
+          
+</beans>
+
+
+
+
