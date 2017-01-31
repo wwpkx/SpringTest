@@ -2,6 +2,7 @@ package junit.test.itcast;
 
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,8 +27,69 @@ public class ItcastClassPathXMLApplicationContext {
 	public ItcastClassPathXMLApplicationContext(String filename){
 		this.readXML(filename);
 		this.instanceBeans();
+		this.annotationInject();
 		this.injectObject();
 	}
+	/**
+	 * 通过注解实现注入依赖对象
+	 */
+	private void annotationInject() {
+		for(String beanName : sigletons.keySet()){
+			Object bean = sigletons.get(beanName);
+			if(bean!=null){
+				try {
+					PropertyDescriptor[] ps = Introspector.getBeanInfo(bean.getClass()).getPropertyDescriptors();
+					for(PropertyDescriptor properdesc : ps){
+						Method setter = properdesc.getWriteMethod();//获取属性的setter方法
+						if(setter!=null && setter.isAnnotationPresent(ItcastResource.class)){
+							ItcastResource resource = setter.getAnnotation(ItcastResource.class);
+							Object value = null;
+							if(resource.name()!=null && !"".equals(resource.name())){
+								value = sigletons.get(resource.name());
+							}else{
+								value = sigletons.get(properdesc.getName());
+								if(value==null){
+									for(String key : sigletons.keySet()){
+										if(properdesc.getPropertyType().isAssignableFrom(sigletons.get(key).getClass())){
+											value = sigletons.get(key);
+											break;
+										}
+									}
+								}								
+							}
+							setter.setAccessible(true);
+							setter.invoke(bean, value);//把引用对象注入到属性
+						}
+					}
+					Field[] fields = bean.getClass().getDeclaredFields();
+					for(Field field : fields){
+						if(field.isAnnotationPresent(ItcastResource.class)){
+							ItcastResource resource = field.getAnnotation(ItcastResource.class);
+							Object value = null;
+							if(resource.name()!=null && !"".equals(resource.name())){
+								value = sigletons.get(resource.name());
+							}else{
+								value = sigletons.get(field.getName());
+								if(value==null){
+									for(String key : sigletons.keySet()){
+										if(field.getType().isAssignableFrom(sigletons.get(key).getClass())){
+											value = sigletons.get(key);
+											break;
+										}
+									}
+								}								
+							}
+							field.setAccessible(true);//允许访问private字段
+							field.set(bean, value);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	/**
 	 * 为bean对象的属性注入值
 	 */

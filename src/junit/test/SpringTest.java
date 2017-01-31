@@ -89,7 +89,7 @@ public class SpringTest {
 	}
 	
 	/**
-	 * 注入依赖对象
+	 * 注入依赖对象（set or constructor）
 	 * 1.set注入（最常用）
 	 * 2.constructor-arg注入
 	 */
