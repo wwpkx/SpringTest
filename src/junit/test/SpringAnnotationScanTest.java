@@ -28,7 +28,6 @@ public class SpringAnnotationScanTest {
 		System.out.println(personDaoBean2);
 		
 		personService.save();
-		
 		ctx.close();
 	}
 }

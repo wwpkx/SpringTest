@@ -21,7 +21,7 @@ public class PersonServiceBean7 implements PersonService {
 	
 	@PreDestroy
 	public void destory(){
-		System.out.println("开闭资源");
+		System.out.println("关闭资源");
 	}
 	
 	public void setPersonDao(PersonDao personDao) {
