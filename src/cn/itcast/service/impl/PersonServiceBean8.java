@@ -21,6 +21,7 @@ public class PersonServiceBean8 implements PersonService2{
 	}
 
 	public void save(String name) {
+//		throw new RuntimeException("我爱例外");
 		System.out.println("我是save()方法");
 	}
 

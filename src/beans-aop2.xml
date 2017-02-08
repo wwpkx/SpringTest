@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" 
+       xmlns:aop="http://www.springframework.org/schema/aop"      
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+        <aop:aspectj-autoproxy/> 
+        <bean id="personService" class="cn.itcast.service.impl.PersonServiceBean8"></bean>
+        <bean id="aspetbean" class="cn.itcast.service.MyInterceptor2"/>
+        <aop:config>
+        	<aop:aspect id="asp" ref="aspetbean">
+        		<aop:pointcut id="mycut" expression="execution(* cn.itcast.service..*.*(..))"/>
+        		<aop:before pointcut-ref="mycut" method="doAccessCheck"/>
+        		<aop:after-returning pointcut-ref="mycut" method="doAfterReturning"/>
+			  	<aop:after-throwing pointcut-ref="mycut" method="doAfterThrowing"/>
+			  	<aop:after pointcut-ref="mycut" method="doAfter"/>
+			  	<aop:around pointcut-ref="mycut" method="doBasicProfiling"/>
+        	</aop:aspect>
+        	
+        	<aop:aspect id="asp2" ref="aspetbean">
+			  	<aop:pointcut id="mycut2" expression="execution(java.lang.String cn.itcast.service..*.*(..))"/>
+        		<aop:before pointcut-ref="mycut2" method="doAccessCheck"/>
+        		<aop:after-returning pointcut-ref="mycut2" method="doAfterReturning"/>
+			  	<aop:after-throwing pointcut-ref="mycut2" method="doAfterThrowing"/>
+			  	<aop:after pointcut-ref="mycut2" method="doAfter"/>
+			  	<aop:around pointcut-ref="mycut2" method="doBasicProfiling"/>
+        	</aop:aspect>
+        </aop:config>
+</beans>
